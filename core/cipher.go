@@ -28,10 +28,10 @@ type PacketConnCipher interface {
 var ErrCipherNotSupported = errors.New("cipher not supported")
 
 const (
-	aeadAes128Gcm        = "aes-128-gcm"
-	aeadAes192Gcm        = "aes-192-gcm"
-	aeadAes256Gcm        = "aes-256-gcm"
-	aeadChacha20Poly1305 = "chacha20-poly1305"
+	aeadAes128Gcm        = "AEAD_AES_128_GCM"
+	aeadAes192Gcm        = "AEAD_AES_192_GCM"
+	aeadAes256Gcm        = "AEAD_AES_256_GCM"
+	aeadChacha20Poly1305 = "AEAD_CHACHA20_POLY1305"
 )
 
 // List of AEAD ciphers: key size in bytes and constructor
@@ -50,14 +50,14 @@ var streamList = map[string]struct {
 	KeySize int
 	New     func(key []byte) (shadowstream.Cipher, error)
 }{
-	"aes-128-ctr":   {16, shadowstream.AESCTR},
-	"aes-192-ctr":   {24, shadowstream.AESCTR},
-	"aes-256-ctr":   {32, shadowstream.AESCTR},
-	"aes-128-cfb":   {16, shadowstream.AESCFB},
-	"aes-192-cfb":   {24, shadowstream.AESCFB},
-	"aes-256-cfb":   {32, shadowstream.AESCFB},
-	"chacha20-ietf": {32, shadowstream.Chacha20IETF},
-	"xchacha20":     {32, shadowstream.Xchacha20},
+	"AES-128-CTR":   {16, shadowstream.AESCTR},
+	"AES-192-CTR":   {24, shadowstream.AESCTR},
+	"AES-256-CTR":   {32, shadowstream.AESCTR},
+	"AES-128-CFB":   {16, shadowstream.AESCFB},
+	"AES-192-CFB":   {24, shadowstream.AESCFB},
+	"AES-256-CFB":   {32, shadowstream.AESCFB},
+	"CHACHA20-IETF": {32, shadowstream.Chacha20IETF},
+	"XCHACHA20":     {32, shadowstream.Xchacha20},
 }
 
 // ListCipher returns a list of available cipher names sorted alphabetically.
@@ -78,15 +78,15 @@ func PickCipher(name string, key []byte, password string) (Cipher, error) {
 	name = strings.ToUpper(name)
 
 	switch name {
-	case "dummy":
+	case "DUMMY":
 		return &dummy{}, nil
-	case "chacha20-ietf-poly1305":
+	case "CHACHA20-IETF-POLY1305":
 		name = aeadChacha20Poly1305
-	case "aes-128-gcm":
+	case "AES-128-GCM":
 		name = aeadAes128Gcm
-	case "aes-192-gcm":
+	case "AES-192-GCM":
 		name = aeadAes192Gcm
-	case "aes-256-gcm":
+	case "AES-256-GCM":
 		name = aeadAes256Gcm
 	}
 
