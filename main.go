@@ -20,7 +20,7 @@ func purge(instanceList map[int]*Instance, users []User) {
 			}
 		}
 
-		if !contains {
+		if !contains && instance.Started {
 			instance.Stop()
 		}
 	}
@@ -28,11 +28,12 @@ func purge(instanceList map[int]*Instance, users []User) {
 
 func report(instance *Instance, database *Database) {
 	if instance.Bandwidth.Upload != 0 || instance.Bandwidth.Download != 0 {
-		log.Println(instance.Bandwidth)
-		if err := database.UpdateBandwidth(instance.Port, instance.Bandwidth.Upload, instance.Bandwidth.Download); err == nil {
-			instance.Bandwidth.Reset()
-		} else {
-			log.Println(err)
+		if instance.Bandwidth.Last-time.Now().Unix() < 10 {
+			if err := database.UpdateBandwidth(instance.Port, instance.Bandwidth.Upload, instance.Bandwidth.Download); err == nil {
+				instance.Bandwidth.Reset()
+			} else {
+				log.Println(err)
+			}
 		}
 	}
 }
@@ -42,6 +43,10 @@ func update(instance *Instance, method, password string) {
 		instance.Method = method
 		instance.Password = password
 
+		restart(instance)
+	}
+
+	if instance.Started && (!instance.TCPStarted || !instance.UDPStarted) {
 		restart(instance)
 	}
 }
@@ -85,6 +90,7 @@ func main() {
 	instanceList := make(map[int]*Instance, 65535)
 
 	for {
+		log.Println("Wait 10 second for sync users")
 		time.Sleep(10 * time.Second)
 
 		log.Println("Start syncing")
@@ -95,6 +101,8 @@ func main() {
 			log.Println(err)
 			continue
 		}
+
+		defer database.Close()
 
 		log.Println("Get database users")
 		users, err := database.GetUser()
@@ -107,8 +115,9 @@ func main() {
 		purge(instanceList, users)
 
 		for _, user := range users {
+			log.Println(user)
 			if instance, ok := instanceList[user.Port]; ok {
-				if user.Enable == 1 {
+				if user.TransferEnable > user.Upload+user.Download {
 					update(instance, user.Method, user.Password)
 				} else {
 					if instance.Started {
@@ -118,13 +127,12 @@ func main() {
 					report(instance, database)
 					delete(instanceList, user.Port)
 				}
-			} else {
-				if user.Enable == 1 {
-					instance := newInstance(user.Port, user.Method, user.Password)
-					instance.Start()
+			} else if user.TransferEnable > user.Upload+user.Download {
+				log.Printf("Starting new instance for %d", user.Port)
+				instance := newInstance(user.Port, user.Method, user.Password)
+				instance.Start()
 
-					instanceList[user.Port] = instance
-				}
+				instanceList[user.Port] = instance
 			}
 		}
 
