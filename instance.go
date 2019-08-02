@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 
 	"github.com/NetchX/shadowsocks-multiuser/core"
@@ -22,6 +23,7 @@ type Instance struct {
 func (instance *Instance) Start() {
 	cipher, err := core.PickCipher(instance.Method, make([]byte, 0), instance.Password)
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
