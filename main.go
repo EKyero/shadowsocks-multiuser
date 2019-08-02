@@ -87,18 +87,23 @@ func main() {
 	for {
 		time.Sleep(10 * time.Second)
 
+		log.Println("Start syncing")
+
+		log.Println("Opening database connection")
 		database := newDatabase(flags.DbHost, flags.DbPort, flags.DbUser, flags.DbPass, flags.DbName)
 		if err := database.Open(); err != nil {
 			log.Println(err)
 			continue
 		}
 
+		log.Println("Get database users")
 		users, err := database.GetUser()
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 
+		log.Println("Purge server users")
 		purge(instanceList, users)
 
 		for _, user := range users {
@@ -127,6 +132,6 @@ func main() {
 			report(instance, database)
 		}
 
-		log.Println("done")
+		log.Println("Sync done")
 	}
 }
