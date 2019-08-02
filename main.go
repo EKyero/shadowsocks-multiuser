@@ -64,19 +64,19 @@ func main() {
 
 	var flags struct {
 		ListCipher bool
-		DbHost     string
-		DbPort     int
-		DbUser     string
-		DbPass     string
-		DbName     string
+		DBHost     string
+		DBPort     int
+		DBUser     string
+		DBPass     string
+		DBName     string
 	}
 
 	flag.BoolVar(&flags.ListCipher, "listcipher", false, "list cipher")
-	flag.StringVar(&flags.DbHost, "dbhost", "localhost", "database host")
-	flag.IntVar(&flags.DbPort, "dbport", 3306, "database port")
-	flag.StringVar(&flags.DbUser, "dbuser", "root", "database user")
-	flag.StringVar(&flags.DbPass, "dbpass", "123456", "database pass")
-	flag.StringVar(&flags.DbName, "dbname", "sspanel", "database name")
+	flag.StringVar(&flags.DBHost, "dbhost", "localhost", "database host")
+	flag.IntVar(&flags.DBPort, "dbport", 3306, "database port")
+	flag.StringVar(&flags.DBUser, "dbuser", "root", "database user")
+	flag.StringVar(&flags.DBPass, "dbpass", "123456", "database pass")
+	flag.StringVar(&flags.DBName, "dbname", "sspanel", "database name")
 	flag.Parse()
 
 	if flags.ListCipher {
@@ -96,7 +96,7 @@ func main() {
 		log.Println("Start syncing")
 
 		log.Println("Opening database connection")
-		database := newDatabase(flags.DbHost, flags.DbPort, flags.DbUser, flags.DbPass, flags.DbName)
+		database := newDatabase(flags.DBHost, flags.DBPort, flags.DBUser, flags.DBPass, flags.DBName)
 		if err := database.Open(); err != nil {
 			log.Println(err)
 			continue
