@@ -52,7 +52,7 @@ func (database *Database) Close() error {
 
 // GetUser RT.
 func (database *Database) GetUser() ([]User, error) {
-	results, err := database.Connection.Query("SELECT u, d, port, method, passwd, enable, transfer_enable FROM user")
+	results, err := database.Connection.Query("SELECT u, d, port, method, passwd, enable, transfer_enable FROM user WHERE enable=1")
 	if err != nil {
 		return nil, err
 	}
