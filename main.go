@@ -60,7 +60,8 @@ func restart(instance *Instance) {
 }
 
 func main() {
-	log.Println("shadowsocks-multiuser 1.0.0")
+	log.Println("Starting shadowsocks-multiuser")
+	log.Println("Version: 1.0.0")
 
 	var flags struct {
 		ListCipher bool
@@ -89,6 +90,7 @@ func main() {
 
 	instanceList := make(map[int]*Instance, 65535)
 
+	log.Println("Started")
 	for {
 		log.Println("Wait 10 second for sync users")
 		time.Sleep(10 * time.Second)
