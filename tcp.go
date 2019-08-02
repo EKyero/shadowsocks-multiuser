@@ -20,7 +20,6 @@ func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
 
 	instance.TCPStarted = true
 
-	log.Printf("Start listening TCP on %d", instance.Port)
 	for instance.Started {
 		client, err := socket.Accept()
 		if err != nil {
@@ -49,7 +48,6 @@ func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
 	}
 
 	instance.TCPStarted = false
-	log.Printf("Stop listening TCP on %d", instance.Port)
 }
 
 func tcpRelay(instance *Instance, left, right net.Conn) error {

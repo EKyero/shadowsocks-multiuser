@@ -26,7 +26,6 @@ func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
 
 	instance.UDPStarted = true
 
-	log.Printf("Start listening UDP on %d", instance.Port)
 	for instance.Started {
 		size, remoteAddress, err := socket.ReadFrom(buffer)
 		if err != nil {
@@ -63,7 +62,6 @@ func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
 	}
 
 	instance.UDPStarted = false
-	log.Printf("Stop listening UDP on %d", instance.Port)
 }
 
 // NAT struct
