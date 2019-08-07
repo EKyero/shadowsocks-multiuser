@@ -10,6 +10,7 @@ import (
 
 // Instance struct
 type Instance struct {
+	UserID     int
 	Port       int
 	Method     string
 	Password   string
@@ -50,8 +51,9 @@ func (instance *Instance) Stop() {
 	}
 }
 
-func newInstance(port int, method, password string) *Instance {
+func newInstance(id int, port int, method, password string) *Instance {
 	instance := Instance{}
+	instance.UserID = id
 	instance.Port = port
 	instance.Method = method
 	instance.Password = password

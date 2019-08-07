@@ -28,8 +28,8 @@ func purge(instanceList map[int]*Instance, users []User) {
 
 func report(instance *Instance, database *Database) {
 	if instance.Bandwidth.Upload != 0 || instance.Bandwidth.Download != 0 {
-		if instance.Bandwidth.Last-time.Now().Unix() < 10 {
-			if err := database.UpdateBandwidth(instance.Port, instance.Bandwidth.Upload, instance.Bandwidth.Download); err == nil {
+		if time.Now().Unix()-instance.Bandwidth.Last > 10 {
+			if err := database.UpdateBandwidth(instance); err == nil {
 				instance.Bandwidth.Reset()
 			} else {
 				log.Println(err)
@@ -70,6 +70,7 @@ func main() {
 		DBUser     string
 		DBPass     string
 		DBName     string
+		NodeID     int
 	}
 
 	flag.BoolVar(&flags.ListCipher, "listcipher", false, "list cipher")
@@ -78,6 +79,7 @@ func main() {
 	flag.StringVar(&flags.DBUser, "dbuser", "root", "database user")
 	flag.StringVar(&flags.DBPass, "dbpass", "123456", "database pass")
 	flag.StringVar(&flags.DBName, "dbname", "sspanel", "database name")
+	flag.IntVar(&flags.NodeID, "nodeid", -1, "node id")
 	flag.Parse()
 
 	if flags.ListCipher {
@@ -85,6 +87,11 @@ func main() {
 			fmt.Println(v)
 		}
 
+		return
+	}
+
+	if flags.NodeID == -1 {
+		fmt.Println("Node id must be specified")
 		return
 	}
 
@@ -98,7 +105,7 @@ func main() {
 		log.Println("Start syncing")
 
 		log.Println("Opening database connection")
-		database := newDatabase(flags.DBHost, flags.DBPort, flags.DBUser, flags.DBPass, flags.DBName)
+		database := newDatabase(flags.DBHost, flags.DBPort, flags.DBUser, flags.DBPass, flags.DBName, flags.NodeID)
 		if err := database.Open(); err != nil {
 			log.Println(err)
 			continue
@@ -130,8 +137,8 @@ func main() {
 					delete(instanceList, user.Port)
 				}
 			} else if user.TransferEnable > user.Upload+user.Download {
-				log.Printf("Starting new instance for %d", user.Port)
-				instance := newInstance(user.Port, user.Method, user.Password)
+				log.Printf("Starting new instance for %d", user.ID)
+				instance := newInstance(user.ID, user.Port, user.Method, user.Password)
 				instance.Start()
 
 				instanceList[user.Port] = instance
