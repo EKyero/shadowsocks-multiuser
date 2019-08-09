@@ -1,0 +1,13 @@
+[Unit]
+Description=Shadowsocks Multi-User Server
+After=network.target
+
+[Service]
+Type=simple
+User=shadowsocks-multiuser
+WorkingDirectory=/opt/shadowsocks-multiuser
+ExecStart=/opt/shadowsocks-multiuser -nodeid 0 -dbhost localhost -dbuser sspanel -dbpass sspanel -dbname sspanel
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
