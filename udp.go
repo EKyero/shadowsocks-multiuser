@@ -13,7 +13,7 @@ import (
 const udpBufferSize = 64 * 1024
 
 func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
-	socket, err := net.ListenPacket("udp", fmt.Sprintf("0.0.0.0:%d", instance.Port))
+	socket, err := net.ListenPacket("udp", fmt.Sprintf(":%d", instance.Port))
 	if err != nil {
 		log.Printf("Failed to listen UDP on %d: %v", instance.Port, err)
 		return

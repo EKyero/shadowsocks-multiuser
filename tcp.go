@@ -11,7 +11,7 @@ import (
 )
 
 func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
-	socket, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", instance.Port))
+	socket, err := net.Listen("tcp", fmt.Sprintf(":%d", instance.Port))
 	if err != nil {
 		log.Printf("Failed to listen TCP on %d: %v", instance.Port, err)
 		return
