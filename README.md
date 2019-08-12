@@ -1,26 +1,26 @@
 # shadowsocks-multiuser
-## Compile
+**注意，此后端仅支持原版 SS 而且加密方式较少！**
+
+## 支持的加密方式
 ```
-go get -u -v github.com/NetchX/shadowsocks-multiuser
-cd $GOPATH/src/github.com/NetchX/shadowsocks-multiuser
-go build
+AEAD_AES_128_GCM AEAD_AES_192_GCM AEAD_AES_256_GCM AEAD_CHACHA20_POLY1305 AES-128-CFB AES-128-CTR AES-192-CFB AES-192-CTR AES-256-CFB AES-256-CTR CHACHA20-IETF XCHACHA20
 ```
 
-## Use
+## Ubuntu 自动安装脚本
+1. 运行脚本
+```bash
+curl -fsSL https://raw.githubusercontent.com/NetchX/shadowsocks-multiuser/master/scripts/Ubuntu.sh | bash
 ```
-Usage of shadowsocks-multiuser:
-  -dbhost string
-        database host (default "localhost")
-  -dbname string
-        database name (default "sspanel")
-  -dbpass string
-        database pass (default "123456")
-  -dbport int
-        database port (default 3306)
-  -dbuser string
-        database user (default "root")
-  -listcipher
-        list cipher
-  -nodeid int
-        node id (default -1)
+
+2. 编辑配置文件调整参数
+```bash
+vim /etc/systemd/system/shadowsocks-multiuser.service
+```
+
+3. 重启 Systemd 并开启服务设置自启
+```bash
+systemctl daemon-reload
+systemctl start shadowsocks-multiuser
+systemctl enable shadowsocks-multiuser
+systemctl status shadowsocks-multiuser
 ```
