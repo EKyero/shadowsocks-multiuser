@@ -3,6 +3,8 @@ package shadowstream
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/md5"
+	"crypto/rc4"
 	"strconv"
 
 	"github.com/aead/chacha20"
@@ -52,6 +54,27 @@ func AESCFB(key []byte) (Cipher, error) {
 	return &cfbStream{blk}, nil
 }
 
+type chacha20key []byte
+
+func (k chacha20key) IVSize() int                       { return chacha.NonceSize }
+func (k chacha20key) Decrypter(iv []byte) cipher.Stream { return k.Encrypter(iv) }
+func (k chacha20key) Encrypter(iv []byte) cipher.Stream {
+	ciph, err := chacha20.NewCipher(iv, k)
+	if err != nil {
+		panic(err)
+	}
+
+	return ciph
+}
+
+func Chacha20(key []byte) (Cipher, error) {
+	if len(key) != chacha.KeySize {
+		return nil, KeySizeError(chacha.KeySize)
+	}
+
+	return chacha20key(key), nil
+}
+
 // IETF-variant of chacha20
 type chacha20ietfkey []byte
 
@@ -89,4 +112,22 @@ func Xchacha20(key []byte) (Cipher, error) {
 		return nil, KeySizeError(chacha.KeySize)
 	}
 	return xchacha20key(key), nil
+}
+
+type rc4Md5Key []byte
+
+func (k rc4Md5Key) IVSize() int                       { return 16 }
+func (k rc4Md5Key) Decrypter(iv []byte) cipher.Stream { return k.Encrypter(iv) }
+func (k rc4Md5Key) Encrypter(iv []byte) cipher.Stream {
+	h := md5.New()
+	h.Write([]byte(k))
+	h.Write(iv)
+
+	rc4key := h.Sum(nil)
+	ciph, err := rc4.NewCipher(rc4key)
+	if err != nil {
+		panic(err)
+	}
+
+	return ciph
 }
