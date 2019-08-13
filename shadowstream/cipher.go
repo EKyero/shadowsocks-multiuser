@@ -131,3 +131,7 @@ func (k rc4Md5Key) Encrypter(iv []byte) cipher.Stream {
 
 	return ciph
 }
+
+func RC4MD5(key []byte) (Cipher, error) {
+	return rc4Md5Key(key), nil
+}
