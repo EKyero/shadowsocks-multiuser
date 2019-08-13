@@ -60,9 +60,6 @@ func restart(instance *Instance) {
 }
 
 func main() {
-	log.Println("Starting shadowsocks-multiuser")
-	log.Println("Version: 1.0.0")
-
 	var flags struct {
 		ListCipher bool
 		DBHost     string
@@ -90,8 +87,11 @@ func main() {
 		return
 	}
 
+	log.Println("Starting shadowsocks-multiuser")
+	log.Println("Version: 1.0.0")
+
 	if flags.NodeID == -1 {
-		fmt.Println("Node id must be specified")
+		log.Println("Node id must be specified")
 		return
 	}
 
