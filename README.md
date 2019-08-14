@@ -20,6 +20,29 @@ CHACHA20-IETF
 XCHACHA20
 ```
 
+## 命令行参数
+```
+Usage of shadowsocks-multiuser:
+  -dbhost string
+        Database hostname (default "localhost")
+  -dbname string
+        Database name (default "sspanel")
+  -dbpass string
+        Database password (default "123456")
+  -dbport int
+        Database port (default 3306)
+  -dbuser string
+        Database username (default "root")
+  -listcipher
+        List all cipher
+  -nodeid int
+        Node ID (default -1)
+  -syncinterval int
+        Sync interval (default 30)
+  -udp
+        UDP forward
+```
+
 ## Ubuntu 自动安装脚本
 1. 运行脚本
 ```bash
