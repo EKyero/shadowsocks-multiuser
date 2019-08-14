@@ -24,23 +24,23 @@ XCHACHA20
 ```
 Usage of shadowsocks-multiuser:
   -dbhost string
-        Database hostname (default "localhost")
-  -dbname string
-        Database name (default "sspanel")
-  -dbpass string
-        Database password (default "123456")
+        数据库地址 (default "localhost")
   -dbport int
-        Database port (default 3306)
+        数据库端口 (default 3306)
+  -dbname string
+        数据库名称 (default "sspanel")
   -dbuser string
-        Database username (default "root")
+        数据库账号 (default "root")
+  -dbpass string
+        数据库密码 (default "123456")
   -listcipher
-        List all cipher
+        列出所有支持的加密方式
   -nodeid int
-        Node ID (default -1)
+        节点 ID (default -1)
   -syncinterval int
-        Sync interval (default 30)
+        同步间隔（秒） (default 30)
   -udp
-        UDP forward
+        开启 UDP 转发
 ```
 
 ## Ubuntu 自动安装脚本
