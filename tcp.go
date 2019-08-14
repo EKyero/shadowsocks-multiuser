@@ -18,7 +18,7 @@ func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
 	}
 	defer socket.Close()
 
-	instance.TCPStarted = true
+	instance.TCPSocket = socket
 
 	for instance.Started {
 		client, err := socket.Accept()
@@ -46,8 +46,6 @@ func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
 			tcpRelay(instance, client, remoteClient)
 		}()
 	}
-
-	instance.TCPStarted = false
 }
 
 func tcpRelay(instance *Instance, left, right net.Conn) error {

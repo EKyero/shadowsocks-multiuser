@@ -24,7 +24,7 @@ func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
 	nat := newNAT(1 * time.Minute)
 	buffer := make([]byte, udpBufferSize)
 
-	instance.UDPStarted = true
+	instance.UDPSocket = socket
 
 	for instance.Started {
 		size, remoteAddress, err := socket.ReadFrom(buffer)
@@ -60,8 +60,6 @@ func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
 
 		instance.Bandwidth.IncreaseUpload(uint64(size))
 	}
-
-	instance.UDPStarted = false
 }
 
 // NAT struct

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 
@@ -10,14 +9,14 @@ import (
 
 // Instance struct
 type Instance struct {
-	UserID     int
-	Port       int
-	Method     string
-	Password   string
-	Bandwidth  *Bandwidth
-	Started    bool
-	TCPStarted bool
-	UDPStarted bool
+	UserID    int
+	Port      int
+	Method    string
+	Password  string
+	Bandwidth *Bandwidth
+	Started   bool
+	TCPSocket net.Listener
+	UDPSocket net.PacketConn
 }
 
 // Start instance
@@ -41,18 +40,12 @@ func (instance *Instance) Start() {
 func (instance *Instance) Stop() {
 	instance.Started = false
 
-	tcp, err := net.Dial("tcp", fmt.Sprintf("127.0.0.1:%d", instance.Port))
-	if err == nil {
-		tcp.Close()
+	if instance.TCPSocket != nil {
+		instance.TCPSocket.Close()
 	}
 
-	if flags.UDPEnabled {
-		udp, err := net.Dial("udp", fmt.Sprintf("127.0.0.1:%d", instance.Port))
-		if err == nil {
-			fmt.Fprint(udp, "NMSL")
-
-			udp.Close()
-		}
+	if instance.UDPSocket != nil && flags.UDPEnabled {
+		instance.UDPSocket.Close()
 	}
 }
 
@@ -64,8 +57,6 @@ func newInstance(id int, port int, method, password string) *Instance {
 	instance.Password = password
 	instance.Bandwidth = newBandwidth()
 	instance.Started = false
-	instance.TCPStarted = false
-	instance.UDPStarted = false
 
 	return &instance
 }

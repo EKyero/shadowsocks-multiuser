@@ -58,7 +58,7 @@ func update(instance *Instance, method, password string) {
 		restart(instance)
 	}
 
-	if instance.Started && (!instance.TCPStarted || !instance.UDPStarted) {
+	if instance.Started {
 		restart(instance)
 	}
 }
