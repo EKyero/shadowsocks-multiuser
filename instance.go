@@ -31,7 +31,10 @@ func (instance *Instance) Start() {
 	instance.Started = true
 
 	go tcpRemote(instance, cipher.StreamConn)
-	go udpRemote(instance, cipher.PacketConn)
+
+	if flags.UDPEnabled {
+		go udpRemote(instance, cipher.PacketConn)
+	}
 }
 
 // Stop instance
@@ -43,11 +46,13 @@ func (instance *Instance) Stop() {
 		tcp.Close()
 	}
 
-	udp, err := net.Dial("udp", fmt.Sprintf("127.0.0.1:%d", instance.Port))
-	if err == nil {
-		fmt.Fprint(udp, "NMSL")
+	if flags.UDPEnabled {
+		udp, err := net.Dial("udp", fmt.Sprintf("127.0.0.1:%d", instance.Port))
+		if err == nil {
+			fmt.Fprint(udp, "NMSL")
 
-		udp.Close()
+			udp.Close()
+		}
 	}
 }
 

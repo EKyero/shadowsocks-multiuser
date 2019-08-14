@@ -9,6 +9,17 @@ import (
 	"github.com/NetchX/shadowsocks-multiuser/core"
 )
 
+var flags struct {
+	ListCipher bool
+	DBHost     string
+	DBPort     int
+	DBUser     string
+	DBPass     string
+	DBName     string
+	NodeID     int
+	UDPEnabled bool
+}
+
 func purge(instanceList map[int]*Instance, users []User) {
 	for _, instance := range instanceList {
 		contains := false
@@ -60,23 +71,14 @@ func restart(instance *Instance) {
 }
 
 func main() {
-	var flags struct {
-		ListCipher bool
-		DBHost     string
-		DBPort     int
-		DBUser     string
-		DBPass     string
-		DBName     string
-		NodeID     int
-	}
-
-	flag.BoolVar(&flags.ListCipher, "listcipher", false, "list cipher")
-	flag.StringVar(&flags.DBHost, "dbhost", "localhost", "database host")
-	flag.IntVar(&flags.DBPort, "dbport", 3306, "database port")
-	flag.StringVar(&flags.DBUser, "dbuser", "root", "database user")
-	flag.StringVar(&flags.DBPass, "dbpass", "123456", "database pass")
-	flag.StringVar(&flags.DBName, "dbname", "sspanel", "database name")
-	flag.IntVar(&flags.NodeID, "nodeid", -1, "node id")
+	flag.BoolVar(&flags.ListCipher, "listcipher", false, "List all cipher")
+	flag.StringVar(&flags.DBHost, "dbhost", "localhost", "Database hostname")
+	flag.IntVar(&flags.DBPort, "dbport", 3306, "Database port")
+	flag.StringVar(&flags.DBUser, "dbuser", "root", "Database username")
+	flag.StringVar(&flags.DBPass, "dbpass", "123456", "Database password")
+	flag.StringVar(&flags.DBName, "dbname", "sspanel", "Database name")
+	flag.IntVar(&flags.NodeID, "nodeid", -1, "Node ID")
+	flag.BoolVar(&flags.UDPEnabled, "udp", false, "UDP forward")
 	flag.Parse()
 
 	if flags.ListCipher {
