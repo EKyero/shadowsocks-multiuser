@@ -10,14 +10,15 @@ import (
 )
 
 var flags struct {
-	ListCipher bool
-	DBHost     string
-	DBPort     int
-	DBUser     string
-	DBPass     string
-	DBName     string
-	NodeID     int
-	UDPEnabled bool
+	ListCipher   bool
+	DBHost       string
+	DBPort       int
+	DBUser       string
+	DBPass       string
+	DBName       string
+	NodeID       int
+	UDPEnabled   bool
+	SyncInterval int
 }
 
 func purge(instanceList map[int]*Instance, users []User) {
@@ -78,6 +79,7 @@ func main() {
 	flag.StringVar(&flags.DBPass, "dbpass", "123456", "Database password")
 	flag.StringVar(&flags.DBName, "dbname", "sspanel", "Database name")
 	flag.IntVar(&flags.NodeID, "nodeid", -1, "Node ID")
+	flag.IntVar(&flags.SyncInterval, "syncinterval", 30, "Sync interval")
 	flag.BoolVar(&flags.UDPEnabled, "udp", false, "UDP forward")
 	flag.Parse()
 
@@ -98,11 +100,16 @@ func main() {
 	}
 
 	instanceList := make(map[int]*Instance, 65535)
+	first := true
 
 	log.Println("Started")
 	for {
-		log.Println("Wait 10 second for sync users")
-		time.Sleep(10 * time.Second)
+		if !first {
+			log.Printf("Wait %d second for sync users", flags.SyncInterval)
+			time.Sleep(time.Second * time.Duration(flags.SyncInterval))
+		} else {
+			first = false
+		}
 
 		log.Println("Start syncing")
 
