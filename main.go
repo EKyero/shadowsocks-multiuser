@@ -122,6 +122,9 @@ func main() {
 
 		defer database.Close()
 
+		log.Println("Update heartbeat")
+		database.UpdateHeartbeat()
+
 		log.Println("Get database users")
 		users, err := database.GetUser()
 		if err != nil {

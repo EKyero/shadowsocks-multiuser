@@ -59,7 +59,7 @@ func (database *Database) Close() error {
 	return nil
 }
 
-// GetRate RT.
+// GetRate R.T.
 func (database *Database) GetRate() (float64, error) {
 	results, err := database.Connection.Query(fmt.Sprintf("SELECT traffic_rate FROM ss_node WHERE id=%d", database.NodeID))
 	if err != nil {
@@ -77,7 +77,7 @@ func (database *Database) GetRate() (float64, error) {
 	return rate, nil
 }
 
-// GetUser RT.
+// GetUser R.T.
 func (database *Database) GetUser() ([]User, error) {
 	results, err := database.Connection.Query("SELECT id, u, d, port, method, passwd, enable, transfer_enable FROM user WHERE enable=1")
 	if err != nil {
@@ -101,7 +101,14 @@ func (database *Database) GetUser() ([]User, error) {
 	return users[:count], nil
 }
 
-// UpdateBandwidth RT.
+// UpdateHeartbeat R.T.
+func (database *Database) UpdateHeartbeat() error {
+	_, err := database.Connection.Query(fmt.Sprintf("UPDATE ss_node SET node_heartbeat=%d", time.Now().Unix()))
+
+	return err
+}
+
+// UpdateBandwidth R.T.
 func (database *Database) UpdateBandwidth(instance *Instance) error {
 	log.Printf("Reporting %d uploaded %d downloaded %d to database", instance.UserID, instance.Bandwidth.Upload, instance.Bandwidth.Download)
 
