@@ -105,7 +105,7 @@ func main() {
 	log.Println("Started")
 	for {
 		if !first {
-			log.Printf("Wait %d second for sync users", flags.SyncInterval)
+			log.Printf("Wait %d seconds for sync users", flags.SyncInterval)
 			time.Sleep(time.Second * time.Duration(flags.SyncInterval))
 		} else {
 			first = false
