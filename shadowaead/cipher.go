@@ -81,3 +81,11 @@ func Chacha20Poly1305(psk []byte) (Cipher, error) {
 	}
 	return &metaCipher{psk: psk, makeAEAD: chacha20poly1305.New}, nil
 }
+
+func XChacha20Poly1305(psk []byte) (Cipher, error) {
+	if len(psk) != chacha20poly1305.KeySize {
+		return nil, KeySizeError(chacha20poly1305.KeySize)
+	}
+
+	return &metaCipher{psk: psk, makeAEAD: chacha20poly1305.NewX}, nil
+}

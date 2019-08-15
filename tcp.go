@@ -11,16 +11,15 @@ import (
 )
 
 func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
-	socket, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", instance.Port))
+	socket, err := net.Listen("tcp", fmt.Sprintf(":%d", instance.Port))
 	if err != nil {
 		log.Printf("Failed to listen TCP on %d: %v", instance.Port, err)
 		return
 	}
 	defer socket.Close()
 
-	instance.TCPStarted = true
+	instance.TCPSocket = socket
 
-	log.Printf("Start listening TCP on %d", instance.Port)
 	for instance.Started {
 		client, err := socket.Accept()
 		if err != nil {
@@ -47,9 +46,6 @@ func tcpRemote(instance *Instance, cipher func(net.Conn) net.Conn) {
 			tcpRelay(instance, client, remoteClient)
 		}()
 	}
-
-	instance.TCPStarted = false
-	log.Printf("Stop listening TCP on %d", instance.Port)
 }
 
 func tcpRelay(instance *Instance, left, right net.Conn) error {

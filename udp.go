@@ -13,7 +13,7 @@ import (
 const udpBufferSize = 64 * 1024
 
 func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
-	socket, err := net.ListenPacket("udp", fmt.Sprintf("0.0.0.0:%d", instance.Port))
+	socket, err := net.ListenPacket("udp", fmt.Sprintf(":%d", instance.Port))
 	if err != nil {
 		log.Printf("Failed to listen UDP on %d: %v", instance.Port, err)
 		return
@@ -24,9 +24,8 @@ func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
 	nat := newNAT(1 * time.Minute)
 	buffer := make([]byte, udpBufferSize)
 
-	instance.UDPStarted = true
+	instance.UDPSocket = socket
 
-	log.Printf("Start listening UDP on %d", instance.Port)
 	for instance.Started {
 		size, remoteAddress, err := socket.ReadFrom(buffer)
 		if err != nil {
@@ -61,9 +60,6 @@ func udpRemote(instance *Instance, cipher func(net.PacketConn) net.PacketConn) {
 
 		instance.Bandwidth.IncreaseUpload(uint64(size))
 	}
-
-	instance.UDPStarted = false
-	log.Printf("Stop listening UDP on %d", instance.Port)
 }
 
 // NAT struct
