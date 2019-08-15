@@ -83,7 +83,7 @@ func PickCipher(name string, key []byte, password string) (Cipher, error) {
 	name = strings.ToUpper(name)
 
 	switch name {
-	case "DUMMY":
+	case "NONE":
 		return &dummy{}, nil
 	case "CHACHA20-IETF-POLY1305":
 		name = aeadChacha20Poly1305
