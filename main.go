@@ -39,14 +39,10 @@ func purge(instanceList map[int]*Instance, users []User) {
 }
 
 func report(instance *Instance, database *Database) {
-	if instance.Bandwidth.Upload != 0 || instance.Bandwidth.Download != 0 {
-		if time.Now().Unix()-instance.Bandwidth.Last > 10 {
-			if err := database.UpdateBandwidth(instance); err == nil {
-				instance.Bandwidth.Reset()
-			} else {
-				log.Println(err)
-			}
-		}
+	if err := database.UpdateBandwidth(instance); err == nil {
+		instance.Bandwidth.Reset()
+	} else {
+		log.Println(err)
 	}
 }
 
@@ -157,9 +153,19 @@ func main() {
 			}
 		}
 
+		online := 0
 		for _, instance := range instanceList {
-			report(instance, database)
+			if time.Now().Unix()-instance.Bandwidth.Last < 10 {
+				online++
+				continue
+			}
+
+			if instance.Bandwidth.Upload != 0 || instance.Bandwidth.Download != 0 {
+				report(instance, database)
+			}
 		}
+
+		database.ReportUserOnline(online)
 
 		log.Println("Sync done")
 	}

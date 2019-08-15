@@ -141,6 +141,13 @@ func (database *Database) UpdateBandwidth(instance *Instance) error {
 	return err
 }
 
+// ReportUserOnline R.T.
+func (database *Database) ReportUserOnline(online int) error {
+	_, err := database.Connection.Query(fmt.Sprintf("UPDATE ss_node_online_log SET nodeid=%d, online_user=%d, log_time=%d", flags.NodeID, online, time.Now().Unix()))
+
+	return err
+}
+
 func newDatabase(host string, port int, user, pass, name string, id int) *Database {
 	database := Database{}
 	database.DBHost = host
