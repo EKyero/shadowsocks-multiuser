@@ -165,7 +165,10 @@ func main() {
 			}
 		}
 
-		database.ReportUserOnline(online)
+		err = database.ReportUserOnline(online)
+		if err != nil {
+			log.Println(err)
+		}
 
 		log.Println("Sync done")
 	}
